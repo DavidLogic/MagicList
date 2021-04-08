@@ -1,0 +1,553 @@
+﻿<Page
+    x:Class="MagicList.Pages.Today_Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="using:TaskDataClass.data"
+    xmlns:local="using:MagicList.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:muxc1="using:Microsoft.UI.Xaml.Controls"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required"
+    Loaded="Page_Loaded">
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Background_Dictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Page.Resources>
+    <Page.Background>
+        <StaticResource ResourceKey="ClassicBlue"/>
+    </Page.Background>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <StackPanel>
+            <TextBlock
+                Name="Today_Header"
+                Margin="20,0,0,0"
+                FontWeight="Bold"
+                Foreground="{ThemeResource AppBarBackgroundThemeBrush}"
+                RequestedTheme="Light"
+                Style="{StaticResource SubheaderTextBlockStyle}"
+                Text="XX年YY月ZZ日" />
+            <TextBlock
+                Name="lunar_Header"
+                Margin="50,0,0,0"
+                FontSize="15"
+                Foreground="{ThemeResource AppBarBackgroundThemeBrush}"
+                Text="xx年xx月xx日" 
+                RequestedTheme="Light"/>
+        </StackPanel>
+        <RelativePanel HorizontalAlignment="Right">
+            <Button
+                Name="Add_Task"
+                x:Uid="Add_Task"
+                Margin="0,10,20,0"
+                Background="{StaticResource AcrylicControl_BG}"
+                Click="Add_Task_Click"
+                Content="&#xE109;"
+                CornerRadius="6,6,6,6"
+                FontFamily=" Segoe MDL2 Assets"
+                FontSize="20"
+                PointerEntered="Add_Task_PointerEntered"
+                PointerExited="Add_Task_PointerExited"
+                RelativePanel.AlignLeftWithPanel="True"
+                ToolTipService.ToolTip="Add" />
+            <Button
+                Margin="0,10,30,0"
+                Background="{StaticResource AcrylicControl_BG}"
+                Content="&#xE10C;"
+                 CornerRadius="6,6,6,6"
+                FontFamily=" Segoe MDL2 Assets"
+                FontSize="20"
+                RelativePanel.RightOf="Add_Task">
+
+                <Button.Flyout>
+                    <Flyout>
+                        <Grid>
+                            <StackPanel Orientation="Vertical">
+                                <MenuFlyoutItem
+                                    x:Name="Print_List"
+                                    Icon="Print"
+                                    Text="打印"
+                                    Click="Print_List_Click">
+                                    <MenuFlyoutItem.KeyboardAccelerators>
+                                        <KeyboardAccelerator Key="P" Modifiers="Control" />
+                                    </MenuFlyoutItem.KeyboardAccelerators>
+                                </MenuFlyoutItem>
+                                <MenuFlyoutSeparator />
+                                <TextBlock Margin="10,0,0,0" Text="背景" />
+                                <VariableSizedWrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal">
+                                    <VariableSizedWrapGrid.Resources>
+                                        <Style TargetType="Rectangle">
+                                            <Setter Property="Width" Value="32" />
+                                            <Setter Property="Height" Value="32" />
+                                        </Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Padding" Value="0" />
+                                            <Setter Property="MinWidth" Value="0" />
+                                            <Setter Property="MinHeight" Value="0" />
+                                            <Setter Property="Margin" Value="6" />
+                                        </Style>
+                                    </VariableSizedWrapGrid.Resources>
+                                    <!--<Button AutomationProperties.Name="Blue" Visibility="Visible"  ToolTipService.ToolTip="经典蓝">
+                                        <Button.Content>
+                                            <Rectangle Fill="{StaticResource ClassicBlue}" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button AutomationProperties.Name="活力蓝" Visibility="Visible" ToolTipService.ToolTip="活力蓝">
+                                        <Button.Content>
+                                            <Rectangle Fill="{StaticResource Blue}" />
+                                        </Button.Content>
+                                    </Button>-->
+                                    <Button ToolTipService.ToolTip="MagicList" Click="Button_Click">
+                                        <Button.Content>
+                                            <Rectangle Fill="{StaticResource MagicList}" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button ToolTipService.ToolTip="远方高山 " Click="Button_Click_1">
+                                        <Button.Content>
+                                            <Rectangle Fill="{StaticResource Mountain}" />
+                                        </Button.Content>
+                                    </Button>
+                                    <Button AutomationProperties.Name="FireWorks" Click="Button_Click_2" ToolTipService.ToolTip="新年烟火">
+                                        <Button.Content>
+                                            <Rectangle Fill="{StaticResource NewYear_Firework}" Stretch="Uniform">
+
+                                            </Rectangle>
+                                        </Button.Content>
+                                    </Button>
+                                    <ItemsPresenter />
+                                </VariableSizedWrapGrid>
+                            </StackPanel>
+                        </Grid>
+                    </Flyout>
+                </Button.Flyout>
+            </Button>
+        </RelativePanel>
+
+        <ListView
+            Name="Task_List"
+            Grid.Row="1"
+            CornerRadius="2,2,2,2"
+            ItemsSource="{x:Bind task}"
+            ItemClick="Task_List_ItemClick"
+            IsItemClickEnabled="True"
+            ItemContainerStyle="{StaticResource ListViewItemStyle1}"
+            
+            >
+            <ListView.Background>
+                <AcrylicBrush AlwaysUseFallback="True" />
+            </ListView.Background>
+            <ListView.ItemTemplate>
+                <DataTemplate
+                    x:Name="List_data"
+                    x:DataType="data:Tasks"
+                    x:DefaultBindMode="TwoWay">
+                    <Border Background="{StaticResource AcrylicControl_BG}" CornerRadius="4,4,4,4">
+
+                        <StackPanel Orientation="Vertical">
+                            <TextBlock
+                                x:Name="Title_detail"
+                                FontWeight="Bold"
+                                Margin="10,0,0,0"
+                                Text="{x:Bind task_Title}"
+                                TextWrapping="Wrap" />
+                            <RelativePanel Margin="0,0,5,0" HorizontalAlignment="Right">
+
+                                <Button
+                                    x:Name="Achieve_Button"
+                                    Content="&#xE10B;"
+                                    FontFamily="Segoe MDL2 Assets"
+                                    FontSize="10"
+                                    FontWeight="Bold"
+                                    Foreground="#FF383EFF"
+                                    Click="Achieve_Button_Click_1">
+                                    <Button.BorderBrush>
+                                        <AcrylicBrush TintColor="#CC302F2F" />
+                                    </Button.BorderBrush>
+                                    <Button.Background>
+                                        <AcrylicBrush AlwaysUseFallback="True" TintColor="#E6353535" />
+                                    </Button.Background>
+                                </Button>
+                                <Button
+                                    Name="Delelte_Button"
+                                    Margin="0,2,0,0"
+                                    Click="Delelte_Button_Click"
+                                    Content="&#xE107;"
+                                    FontFamily=" Segoe MDL2 Assets"
+                                    FontSize="10"
+                                    Foreground="#FFFD4D4D"
+                                    RelativePanel.Below="Achieve_Button">
+                                    <Button.BorderBrush>
+                                        <AcrylicBrush TintColor="#CC302F2F" />
+                                    </Button.BorderBrush>
+                                    <Button.Background>
+                                        <AcrylicBrush AlwaysUseFallback="True" TintColor="#E6FFFFFF" />
+                                    </Button.Background>
+                                </Button>
+                            </RelativePanel>
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    Name="Date_detail"
+                                    Margin="20,0,0,10"
+                                    Text="{x:Bind task_Date, Mode=TwoWay}" />
+                                <TextBlock
+                                    Name="Time_detail"
+                                    Margin="20,0,0,10"
+                                    Text="{x:Bind task_Time, Mode=TwoWay}" />
+                                <RatingControl
+                                    Name="Value_detail"
+                                    Margin="20,0,0,0"
+                                    Value="{x:Bind Importance_value, Mode=TwoWay}" />
+                                <Button Name="Notification_btn" Click="Notification_btn_Click">
+                                    <Button.Background>
+                                        <AcrylicBrush AlwaysUseFallback="True" />
+                                    </Button.Background>
+
+                                    <Button.Content>
+                                        <Grid>
+                                            <FontIcon
+                                                x:Name="notifi"
+                                                FontFamily="Segoe MDL2 Assets"
+                                                Foreground="#FFFFBE00"
+                                                Glyph="&#xEA8F;"
+                                                RenderTransformOrigin="0.5,0.5">
+                                                <FontIcon.RenderTransform>
+                                                    <CompositeTransform Rotation="23.364" />
+                                                </FontIcon.RenderTransform>
+                                            </FontIcon>
+
+                                        </Grid>
+
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock Margin="10,0,0,0" Text="{x:Bind task_Content, Mode=TwoWay}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Border>
+
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListBoxItem>
+                <Border Background="{StaticResource AcrylicControl_BG}" CornerRadius="2,2,2,2">
+
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock
+                            FontWeight="Bold"
+                            Text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+                            TextWrapping="Wrap" />
+
+                        <RelativePanel Margin="0,0,5,0" HorizontalAlignment="Right">
+
+                            <Button
+                                x:Name="Achieve_Button"
+                                Content="&#xE10B;"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="10"
+                                FontWeight="Bold">
+                                <Button.BorderBrush>
+                                    <AcrylicBrush TintColor="#CC302F2F" />
+                                </Button.BorderBrush>
+                                <Button.Background>
+                                    <AcrylicBrush AlwaysUseFallback="True" TintColor="#E6353535" />
+                                </Button.Background>
+                            </Button>
+                            <Button
+                                Margin="0,2,0,0"
+                                Click="Delelte_Button_Click"
+                                Content="&#xE107;"
+                                FontFamily=" Segoe MDL2 Assets"
+                                FontSize="10"
+                                FontWeight="Bold"
+                                RelativePanel.Below="Achieve_Button">
+                                <Button.BorderBrush>
+                                    <AcrylicBrush TintColor="#CC302F2F" />
+                                </Button.BorderBrush>
+                                <Button.Background>
+                                    <AcrylicBrush AlwaysUseFallback="True" TintColor="#E6FFFFFF" />
+                                </Button.Background>
+                            </Button>
+                        </RelativePanel>
+
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Margin="20,0,0,10" Text="xx:xx:xx" />
+                            <TextBlock Margin="20,0,0,10" Text="xx:xx:xx" />
+                            <RatingControl Margin="20,0,0,0" Value="5" />
+                            <Button Name="Notification_btn" Click="Notification_btn_Click">
+                                <Button.Background>
+                                    <AcrylicBrush AlwaysUseFallback="True" />
+                                </Button.Background>
+
+                                <Button.Content>
+                                    <Grid>
+                                        <FontIcon
+                                            x:Name="notifi"
+                                            FontFamily="Segoe MDL2 Assets"
+                                            Foreground="#FFFFBE00"
+                                            Glyph="&#xEA8F;"
+                                            RenderTransformOrigin="0.5,0.5">
+                                            <FontIcon.RenderTransform>
+                                                <CompositeTransform Rotation="23.364" />
+                                            </FontIcon.RenderTransform>
+                                        </FontIcon>
+
+                                    </Grid>
+
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+                        <TextBlock Text="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum." TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+            </ListBoxItem>
+        </ListView>
+
+        <RelativePanel
+            Name="Creat_New_Task_View"
+            Grid.Row="2"
+            Background="{StaticResource AcrylicControl_BG}"
+            CornerRadius="8,8,4,4"
+            Visibility="Collapsed">
+
+            <RelativePanel.Resources>
+                <Style TargetType="Button">
+                    <Setter Property="BorderThickness" Value="0" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="Margin" Value="0,0,8,0" />
+                </Style>
+            </RelativePanel.Resources>
+
+            <Button
+                x:Name="openFileButton"
+                AutomationProperties.Name="Open file"
+                Click="openFileButton_Click"
+                ToolTipService.ToolTip="Open file">
+                <Button.Content>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xE8E5;" />
+                </Button.Content>
+            </Button>
+            <AppBarSeparator
+                Name="Function_Separator"
+                Height="36"
+                RelativePanel.RightOf="openFileButton" />
+            <StackPanel
+                Name="ChoosedDate_Box"
+                Orientation="Horizontal"
+                RelativePanel.RightOf="Function_Separator">
+                <TextBlock
+                    x:Uid="ChoosedDate_Box"
+                    Margin="0,5,0,0"
+                    Text="选择日期:" />
+                <CalendarDatePicker
+                    Name="Date_Picker"
+                    Margin="10,0,0,0"
+                    RelativePanel.RightOf="ChoosedDate_Box" />
+            </StackPanel>
+            <StackPanel
+                x:Name="ChooseTime_Box"
+                Margin="50,0,0,0"
+                Orientation="Horizontal"
+                RelativePanel.RightOf="ChoosedDate_Box">
+                <TextBlock
+                    x:Uid="ChooseTime_Box"
+                    Margin="20,5,0,0"
+                    Text="选择时间：" />
+                <TimePicker
+                    x:Name="Time_Picker"
+                    BorderThickness="2,2,2,2"
+                    ClockIdentifier="12HourClock" />
+            </StackPanel>
+            <StackPanel
+                x:Name="Importance_Level_Box"
+                Margin="50,0,0,0"
+                Orientation="Horizontal"
+                RelativePanel.RightOf="ChooseTime_Box">
+                <TextBlock
+                    x:Uid="Importance_Level_Box"
+                    Margin="20,5,0,0"
+                    Text="重要性：" />
+                <RatingControl Name="Importance_Level" />
+            </StackPanel>
+            <Button
+                Name="Create_Button"
+                x:Uid="Create_Button"
+                Margin="0,0,60,0"
+                Click="Create_Button_Click"
+                Content="&#xE0E7;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="19"
+                Foreground="#FF383EFF"
+                PointerEntered="Create_Button_PointerEntered"
+                PointerExited="Add_Task_PointerExited"
+                RelativePanel.AlignRightWithPanel="True"
+                ToolTipService.ToolTip="确定">
+                <Button.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="Enter" />
+                </Button.KeyboardAccelerators>
+            </Button>
+            <Button
+                Name="Give_up_Button"
+                x:Uid="Give_up_Button"
+                Margin="0,0,16,0"
+                Click="Give_up_Button_Click"
+                Content="&#xE10A;"
+                FontFamily="Segoe MDL2 Assets"
+                FontSize="19"
+                Foreground="#FFEE3A3A"
+                PointerEntered="Give_up_Button_PointerEntered"
+                PointerExited="Add_Task_PointerExited"
+                RelativePanel.AlignRightWithPanel="True"
+                ToolTipService.ToolTip="放弃" />
+
+            <TextBox
+                x:Name="Creat_New_Task_Title_Box"
+                Height="40"
+                Margin="0,0,0,20"
+                PlaceholderText="输入标题"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.Below="openFileButton" />
+
+            <TextBox
+                x:Name="Creat_New_Task_Box"
+                Height="200"
+                AutomationProperties.Name="Custom editor"
+                PlaceholderText="输入或打开你想建立的计划！"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignRightWithPanel="True"
+                RelativePanel.Below="Creat_New_Task_Title_Box" />
+
+        </RelativePanel>
+
+        <SplitView
+            Name="DetailPane"
+            Grid.RowSpan="3"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Stretch"
+            CornerRadius="2,2,2,2"
+            DisplayMode="Overlay"
+            IsPaneOpen="False"
+            PanePlacement="Right">
+            <SplitView.PaneBackground>
+                <AcrylicBrush TintColor="#CCD6D6D6" />
+            </SplitView.PaneBackground>
+            <SplitView.Pane>
+
+                <Grid CornerRadius="10,10,10,10">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock
+                            HorizontalAlignment="Stretch"
+                            FontSize="26"
+                            Margin="12,0,0,0"
+                            FontWeight="Bold"
+                            Style="{ThemeResource SubheaderTextBlockStyle}"
+                            Text="详情" />
+                        <TextBlock
+                            Margin="18,30,0,0"
+                            FontSize="15"
+                            Text="名称"/>
+                        <TextBox Width="282" x:Name="titeldetail" TextWrapping="Wrap"/>
+                        <TextBox
+                            Width="282"
+                            Margin="13"
+                            Header="详细内容"
+                            Text="" 
+                            Name="taskdetail" TextWrapping="Wrap"/>
+                        <TextBox
+                            Width="280"
+                            HorizontalAlignment="Center"
+                            Header="截至日期" 
+                            x:Name="taskdate"/>
+                        <TextBlock Margin="20" Text="提醒" />
+                        <ToggleButton
+                            Margin="18,0,0,0"
+                            Content="将在xx：xx时提醒您"
+                            CornerRadius="4,4,4,4"
+                            Visibility="Visible"
+                            Name="tasktime" 
+                            IsChecked="True"
+                            Click="Tasktime_Click">
+                            <!--<ToggleSplitButton.Flyout>
+                                <Flyout>
+                                    <StackPanel>
+                                        <MenuFlyoutItem Text="一小时后" />
+                                        <MenuFlyoutItem Text="二小时后" />
+                                        <ItemsPresenter />
+                                        <Button Content="选择时间和日期">
+                                            <Button.Flyout>
+                                                <Flyout>
+                                                    <StackPanel Orientation="Vertical">
+                                                        <CalendarView />
+                                                        <TimePicker ClockIdentifier="24HourClock" />
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <Button Content="确定" />
+                                                            <Button Content="取消" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                        </Button>
+                                    </StackPanel>
+                                </Flyout>
+                            </ToggleSplitButton.Flyout>-->
+                        </ToggleButton>
+                        <StackPanel Margin="18,20,0,0" Orientation="Vertical">
+                        <TextBlock Text="重要性："/>
+                        <RatingControl Margin="0,0,0,0" Name="taskvalue"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Button
+                        Name="Achieved_Button"
+                        Width="100"
+                        Height="30"
+                        Margin="20,0,0,20"
+                        VerticalAlignment="Bottom"
+                        Click="Achieved_Button_Click"
+                        CornerRadius="4,4,4,4"
+                        Style="{StaticResource AccentButtonStyle}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="Accept" />
+                                <TextBlock Text=" 完成" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                    <Button
+                        Width="100"
+                        Height="30"
+                        Margin="0,0,20,20"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Background="#CCFF0000"
+                        Click="Delelte_Button_Click"
+                        CornerRadius="4,4,4,4"
+                        Style="{StaticResource AccentButtonStyle}">
+                        <Button.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <SymbolIcon Symbol="Delete" />
+                                <TextBlock Text="删除" />
+                            </StackPanel>
+                        </Button.Content>
+                    </Button>
+                </Grid>
+            </SplitView.Pane>
+        </SplitView>
+        <muxc1:TeachingTip
+        x:Name="ToggleThemeTeachingTip1"
+	    Target="{x:Bind Add_Task }"
+	    Title="点击这里创建任务">
+            <muxc1:TeachingTip.IconSource>
+            <muxc1:SymbolIconSource Symbol="Emoji2" />
+            </muxc1:TeachingTip.IconSource>
+        </muxc1:TeachingTip>
+    </Grid>
+</Page>

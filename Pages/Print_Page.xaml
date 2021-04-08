@@ -1,0 +1,68 @@
+﻿<Page
+    x:Class="MagicList.Pages.Print_Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:data="using:TaskDataClass.data"
+    xmlns:local="using:MagicList.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    RequestedTheme="Light"
+    mc:Ignorable="d"
+    NavigationCacheMode="Required">
+
+    <Grid Name="Print_Box" x:FieldModifier="public">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <RelativePanel>
+            <TextBlock
+                Name="Title_Box"
+                x:Uid="Title_Box"
+                FontWeight="Bold"
+                RelativePanel.AlignLeftWithPanel="True"
+                RelativePanel.AlignVerticalCenterWithPanel="True"
+                Style="{ThemeResource SubheaderTextBlockStyle}"
+                Text="任务清单" />
+        </RelativePanel>
+        <ListBox
+            Grid.Row="1"
+            HorizontalAlignment="Center"
+            ItemsSource="{x:Bind tasks}">
+            <ListBox.ItemTemplate>
+                <DataTemplate x:DataType="data:Tasks">
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="{x:Bind task_Title}" TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{x:Bind task_Date}" TextWrapping="Wrap" />
+                            <TextBlock Text="{x:Bind task_Time}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <StackPanel Grid.Row="2" Orientation="Horizontal">
+            <Image
+                Width="130"
+                Height="100"
+                Margin="20,0,0,75"
+                Source="/Assets/未标题-1.png" />
+            <TextBlock
+                Margin="30,0,0,150"
+                VerticalAlignment="Bottom"
+                FontSize="25"
+                Text="MagicList,让工作学习更高效！" />
+        </StackPanel>
+
+        <TextBlock
+            Name="Date_Box"
+            Grid.Row="2"
+            Margin="0,0,30,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            FontSize="25"
+            Text="0000/00/00" />
+    </Grid>
+</Page>

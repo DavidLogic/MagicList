@@ -1,0 +1,28 @@
+﻿<Page
+    x:Class="MagicList.Pages.Opening_Page"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:MagicList.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d">
+    <Page.Background>
+        <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+            <GradientStop Offset="0.767" Color="#4DD4692B" />
+            <GradientStop Offset="0" Color="#FFECBDA2" />
+        </LinearGradientBrush>
+    </Page.Background>
+
+    <Grid>
+        <Grid x:Name="effct_bg" />
+        <Grid>
+            <Grid.Background>
+                <LinearGradientBrush StartPoint="0.5,0" EndPoint="0.5,1">
+                    <GradientStop Offset="0.767" Color="#4DD4692B" />
+                    <GradientStop Offset="0" Color="#FFECBDA2" />
+                </LinearGradientBrush>
+            </Grid.Background>
+        </Grid>
+
+    </Grid>
+</Page>
